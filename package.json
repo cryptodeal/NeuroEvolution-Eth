@@ -31,7 +31,6 @@
 	},
 	"dependencies": {
 		"coinbase-pro-node": "^3.0.4",
-		"dayjs": "^1.10.5",
-		"node-binance-api": "^0.12.5"
+		"dayjs": "^1.10.5"
 	}
 }
