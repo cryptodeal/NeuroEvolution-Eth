@@ -1,9 +1,14 @@
 const { loadTradingData } = require('./utils/data');
+const { calcTA } = require('./utils/ta');
 const dayjs = require('dayjs');
 
-var start = dayjs().subtract(16, 'day').toISOString();
-loadTradingData(start)
-	.then((data) => {
-		console.log(data);
-	})
-	.catch((error) => console.log(error));
+const main = async () => {
+	let start = dayjs().subtract(16, 'day').toISOString();
+	let { closes, volumes, highs, lows } = await loadTradingData(start);
+	console.log(closes);
+	let { inputs, inputsTest } = calcTA(closes, highs, lows, volumes, 0.05);
+	console.log(`inputs: ${inputs}`);
+	console.log(`inputsTest: ${inputsTest}`);
+};
+
+main();
