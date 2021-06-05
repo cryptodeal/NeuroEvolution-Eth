@@ -31,6 +31,9 @@
 	},
 	"dependencies": {
 		"coinbase-pro-node": "^3.0.4",
-		"dayjs": "^1.10.5"
+		"dayjs": "^1.10.5",
+		"ml-matrix": "^6.8.0",
+		"talib-binding": "^1.0.2",
+		"talib.js": "^0.1.0"
 	}
 }

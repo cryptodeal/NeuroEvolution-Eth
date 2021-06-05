@@ -30,4 +30,5 @@ const loadTradingData = async (start) => {
 	console.log(`Returning ${closes.length} candles\n`);
 	return { closes, volumes, highs, lows };
 };
+
 module.exports = { loadTradingData };
