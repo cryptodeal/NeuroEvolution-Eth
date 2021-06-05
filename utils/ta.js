@@ -27,6 +27,7 @@ const calcTA = (closes, highs, lows, volumes, testSize) => {
 	}
 	values = values.push(ma);
 
+	//verify grabbing correct data
 	//BB
 	let [upper, , lower] = talib.BBANDS(closes, 40, 2, 2, 0);
 	for (let i = 0; i < upper.length; i++) {
@@ -56,8 +57,17 @@ const calcTA = (closes, highs, lows, volumes, testSize) => {
 	var xTest = new Matrix(nSamples - splitIndex, nFeatures);
 
 	for (let i = 0; i < nSamples; i++) {
-		//i < splitIndex ?
+		i < splitIndex
+			? xTrain.setRow(i, denseInputs.getRow(i))
+			: xTrain.setRow(i - splitIndex, denseInputs.getRow(i));
 	}
+
+	//Scale inputs
+	var scaler = xTrain.standardDeviation();
+	xTrain.scale();
+	xTest.scale(scaler);
+
+	return { xTrain, xTest };
 };
 
 const minMaxScale = (inputs) => {
@@ -76,4 +86,4 @@ const minMaxScale = (inputs) => {
 	return scaled;
 };
 
-module.exports = { minMaxScale };
+module.exports = { minMaxScale, calcTA };
