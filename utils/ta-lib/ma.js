@@ -1,4 +1,5 @@
 const { Sma } = require('./sma');
+const { Ema } = require('./ema');
 const Ma = (inReal, inTimePeriod, inMAType) => {
 	var outReal = new Array(inReal.length);
 	if (inTimePeriod == 1) {
@@ -6,13 +7,13 @@ const Ma = (inReal, inTimePeriod, inMAType) => {
 		return outReal;
 	}
 	switch (inMAType) {
-		/*case 0: //SMA
+		case 0: //SMA
 			outReal = Sma(inReal, inTimePeriod);
 			break;
 		case 1: //EMA
 			outReal = Ema(inReal, inTimePeriod);
 			break;
-		case 2: //WMA
+		/*case 2: //WMA
 			outReal = Wma(inReal, inTimePeriod);
 			break;
 		case 3: //DEMA

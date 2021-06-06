@@ -1,5 +1,3 @@
-const { ModuleResolutionKind } = require('typescript');
-
 const Cci = (inHigh, inLow, inClose, inTimePeriod) => {
 	let outReal = new Array(inClose.length);
 

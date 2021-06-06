@@ -5,6 +5,8 @@ const { Sma } = require('./ta-lib/sma');
 const { Macd } = require('./ta-lib/macd');
 const { Cci } = require('./ta-lib/cci');
 const { Mfi } = require('./ta-lib/mfi');
+const { stdScaler } = require('./scikit/stdScaler');
+
 const calcTA = (closes, highs, lows, volumes, testSize) => {
 	console.log(closes.length, highs.length, lows.length, volumes.length);
 	var values = [];
@@ -77,12 +79,10 @@ const calcTA = (closes, highs, lows, volumes, testSize) => {
 	}
 
 	//Scale inputs
-	var scaler = xTrain.standardDeviation();
-	console.log(`scaler: ${scaler}`);
-	xTrain.scale();
-	xTest.scale(scaler);
+	xTrain = stdScaler(xTrain);
+	xTest = stdScaler(xTest);
 
-	return { xTrain, xTest };
+	return [xTrain, xTest];
 };
 
 const minMaxScale = (inputs) => {

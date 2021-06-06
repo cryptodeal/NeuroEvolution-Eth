@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 const Wallet = class {
 	constructor(startingBalance, txFee) {
 		this.startingBalance = startingBalance;
@@ -5,9 +7,5 @@ const Wallet = class {
 		this.txDiscountFactor = 1 - txFee;
 		this.ethBalance = 0;
 	}
-  buySignal()
+	buySignal() {}
 };
-
-const buySignal = (wallet) => {
-  
-}
