@@ -1,14 +1,18 @@
 /* eslint-disable no-unused-vars */
-const talib = require('talib-binding');
 const { Matrix } = require('ml-matrix');
 const { BBands } = require('./ta-lib/bbands');
+const { Sma } = require('./ta-lib/sma');
+const { Macd } = require('./ta-lib/macd');
+const { Cci } = require('./ta-lib/cci');
+const { Mfi } = require('./ta-lib/mfi');
 const calcTA = (closes, highs, lows, volumes, testSize) => {
 	console.log(closes.length, highs.length, lows.length, volumes.length);
 	var values = [];
 	var signalCount = 0;
 
-	//Money Flow Index (invert signal)
-	let mfi = talib.MFI(highs, lows, closes, volumes, 16);
+	/*Money Flow Index (invert signal)
+  PORTED & WORKING*/
+	let mfi = Mfi(highs, lows, closes, volumes, 16);
 	for (let i = 0; i < mfi.length; i++) {
 		mfi[i] = 100 - mfi[i];
 	}
@@ -16,23 +20,24 @@ const calcTA = (closes, highs, lows, volumes, testSize) => {
 	signalCount++;
 	console.log(`mfi: ${mfi.length}`);
 
-	//verify grabbing correct data
-	//MACD histogram
-	let [, , hist] = talib.MACD(closes, 12, 24, 9);
-	values.push(hist);
+	/*MACD histogram
+  PORTED & WORKING*/
+	let { outMACDHist } = Macd(closes, 12, 24, 9);
+	values.push(outMACDHist);
 	signalCount++;
-	console.log(`hist: ${hist.length}`);
+	console.log(`hist: ${outMACDHist.length}`);
 
-	//Moving average (diff from close)
-	let ma = talib.SMA(closes, 175);
+	/*  Moving average (diff from close)
+  PORTED & WORKING */
+	let ma = Sma(closes, 175);
 	for (let i = 0; i < ma.length; i++) {
 		ma[i] = closes[i] - ma[i];
 	}
 	values.push(ma);
 	console.log(`ma: ${ma.length}`);
 
-	//verify grabbing correct data
-	//BB
+	/* BB
+  PORTED & WORKING */
 	let { outRealUpperBand, outRealMiddleBand, outRealLowerBand } = BBands(closes, 40, 2, 2);
 	for (let i = 0; i < outRealUpperBand.length; i++) {
 		outRealUpperBand[i] = closes[i] - outRealUpperBand[i];
@@ -45,8 +50,9 @@ const calcTA = (closes, highs, lows, volumes, testSize) => {
 
 	signalCount += 2;
 
-	//CCI (invert)
-	let cci = talib.CCI(highs, lows, closes, 17);
+	/*CCI (invert)
+  PORTED & WORKING*/
+	let cci = Cci(highs, lows, closes, 17);
 	for (let i = 0; i < cci.length; i++) {
 		cci[i] = -1 * cci[i];
 	}
@@ -58,8 +64,8 @@ const calcTA = (closes, highs, lows, volumes, testSize) => {
 	var denseInputs = transposed.clone();
 
 	//Split test and train
-	var nSamples = denseInputs.rows();
-	var nFeatures = denseInputs.columns();
+	var nSamples = denseInputs.rows;
+	var nFeatures = denseInputs.columns;
 	var splitIndex = nSamples / 2;
 	var xTrain = new Matrix(splitIndex, nFeatures);
 	var xTest = new Matrix(nSamples - splitIndex, nFeatures);
@@ -72,6 +78,7 @@ const calcTA = (closes, highs, lows, volumes, testSize) => {
 
 	//Scale inputs
 	var scaler = xTrain.standardDeviation();
+	console.log(`scaler: ${scaler}`);
 	xTrain.scale();
 	xTest.scale(scaler);
 

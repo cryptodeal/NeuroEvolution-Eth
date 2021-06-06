@@ -3,7 +3,7 @@ const { StdDev } = require('./stddev');
 const BBands = (inReal, inTimePeriod, inNbDevUp, inNbDevDn, inMaType) => {
 	var bbands = {
 		outRealUpperBand: new Array(inReal.length),
-		outRealMiddleBand: Ma(inReal, inTimePeriod, 0),
+		outRealMiddleBand: Ma(inReal, inTimePeriod, inMaType),
 		outRealLowerBand: new Array(inReal.length)
 	};
 

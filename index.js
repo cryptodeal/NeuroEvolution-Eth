@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const { loadTradingData } = require('./utils/data');
 const { calcTA } = require('./utils/ta');
 const dayjs = require('dayjs');
@@ -7,8 +8,6 @@ const main = async () => {
 	let { closes, volumes, highs, lows } = await loadTradingData(start);
 	console.log(closes);
 	let { inputs, inputsTest } = calcTA(closes, highs, lows, volumes, 0.05);
-	console.log(`inputs: ${inputs}`);
-	console.log(`inputsTest: ${inputsTest}`);
 };
 
 main();
