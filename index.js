@@ -21,10 +21,12 @@ const main = async () => {
 	let benchmark = (closes[closes.length - 1] / closes[0] - 1) * 100;
 	let benchTest = (closes[closes.length - 1] / closesTest[0] - 1) * 100;
 	let c = inputs.columns;
+	console.log(c);
 
 	let concurrentSims = 3;
 	let episodes = 100000;
-	let populationSize = 350;
+	let populationSize = 1;
+	//let populationSize = 350;
 	let decayInterval = 50;
 	let config = new NeuralNetConfig(c, 2, 32, 2);
 
@@ -42,7 +44,8 @@ const main = async () => {
 			}
 		}
 		let fitness = new Array(populationSize);
-		//population.forEach((model, j) => {});
+		console.log(`population[0].WHidden[0].rows: ${population[0].WHidden[0].rows}`);
+		console.log(`population[0].WHidden[0].columns: ${population[0].WHidden[0].columns}`);
 		fitness[0] = runSim(population[0], inputs, closes);
 		console.log(`is it going to work???? Ahhh: ${fitness[0]}`);
 	}

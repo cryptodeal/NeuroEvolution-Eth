@@ -65,70 +65,56 @@ const NeuralNet = class {
 	}
 
 	predict(x) {
-		const applyActivation = (i, j) => {
-			return leakyRelu(this.get(i, j));
-		};
-		console.log(`x rows: ${x.rows}\nx cols: ${x.columns}`);
-		console.log(
-			`this.WHidden[0] rows: ${this.WHidden[0].rows}\nthis.WHidden[0] cols: ${this.WHidden[0].columns}`
-		);
+		var net = this;
+		function applyActivation(i, j) {
+			this.set(i, j, leakyRelu(this.get(i, j)));
+		}
 		/* Inputs */
-		/* FAILING AT MATRIX.MUL */
-		/* SOME MATRIX DIMENSIONS ARE FUCKED */
-		let hiddenLayerInput = Matrix.mul(x, this.WHidden[0]);
-		/* EXPECTED DIMENSIONS (FROM GO) */
-		/* 
-      hiddenLayerInput rows: 768 
-      hiddenLayerInput cols: 32
-      x col: 6 - I RETURN 6
-      x rows: 768 - I RETURN 768
-      net.WHidden[0] rows: 6 - WELP... THIS IS CURRENTLY 32; SO I AM DOING SOMETHING VERY WRONG HAHAHAHA
-      net.WHidden[0] col: 32 - CORRECT WOOHOO!!!!
-    */
-		hiddenLayerInput.apply((i, j) => {
-			return this.get(i, j) + this.BHidden[0].get(0, j);
-		});
+		let hiddenLayerInput = x.mmul(this.WHidden[0]);
+
+		function cb(i, j) {
+			this.set(i, j, this.get(i, j) + net.BHidden[0].get(0, j));
+		}
+		hiddenLayerInput.apply(cb);
 
 		let inputActivations = hiddenLayerInput.clone().apply(applyActivation);
 
 		/* Hidden Layers */
+		function cb2(i, j) {
+			this.get(i, j) + net.BHidden[i].get(0, j);
+		}
 		let last = inputActivations;
 		for (let i = 1; i < this.WHidden.length; i++) {
-			var net = this;
-			let hiddenLayerInput = Matrix.mul(last, this.WHidden[i]);
-
-			hiddenLayerInput.apply((i, j) => {
-				return this.get(i, j) + net.BHidden[i].get(0, j);
-			});
+			let hiddenLayerInput = last.mmul(this.WHidden[i]);
+			hiddenLayerInput.apply(cb2);
 
 			let hiddenLayerActivations = hiddenLayerInput.clone().apply(applyActivation);
 			last = hiddenLayerActivations;
 		}
 
 		/* Output */
-		let outputLayerInput = Matrix.multiply(last, this.WOut);
+		let outputLayerInput = last.mmul(this.WOut);
 		net = this;
-		outputLayerInput.apply((i, j) => {
-			return this.get(i, j) + net.BOut.get(0, j);
-		});
+		function cb3(i, j) {
+			this.set(i, j, this.get(i, j) + net.BOut.get(0, j));
+		}
+		outputLayerInput.apply(cb3);
 
 		return outputLayerInput.apply(applyActivation);
 	}
 };
 
 const newLayer = (inputs, outputs) => {
-	let weights = new Matrix(inputs, outputs);
-	let bias = new Matrix(1, outputs);
 	const normal = random.normal();
+	function cb(i, j) {
+		this.set(i, j, normal());
+	}
 
-	/* VERIFY THAT I HAVE TRANSLATED FOLLOWING LOOPS FROM GO CORRECTLY */
-	weights.apply((row, col) => {
-		weights.set(row, col, normal());
-	});
-
-	bias.apply((row, col) => {
-		bias.set(row, col, normal());
-	});
+	/* THIS SEEMS TO BE WHERE THE PROGRAM IS GETTING FUCKED */
+	const weights = new Matrix(inputs, outputs);
+	weights.apply(cb);
+	const bias = new Matrix(1, outputs);
+	bias.apply(cb);
 
 	return [weights, bias];
 };
@@ -143,10 +129,13 @@ const newNeuralNet = (config, mutateRate, mutateScale) => {
 	net.BHidden = new Array(config.hiddenLayers);
 
 	/* Inputs */
+	/* BUG SEEMS TO ARISE WHEN CREATING NEW LAYERS */
 	[net.WHidden[0], net.BHidden[0]] = newLayer(net.config.inputNeurons, net.config.hiddenNeurons);
+	console.log(`net.WHidden[0] rows: ${net.WHidden[0].rows}`);
+	console.log(`net.WHidden[0] cols: ${net.WHidden[0].columns}`);
 
 	/* Hidden Layers*/
-	for (let i = 0; i < config.hiddenLayers; i++) {
+	for (let i = 1; i < config.hiddenLayers; i++) {
 		[net.WHidden[i], net.BHidden[i]] = newLayer(net.config.hiddenNeurons, net.config.hiddenNeurons);
 	}
 
