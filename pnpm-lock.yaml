@@ -11,6 +11,8 @@ specifiers:
   ml-matrix: ^6.8.0
   prettier: ^2.3.1
   random: ^3.0.6
+  seedrandom: ^3.0.5
+  timestamp-nano: ^1.0.0
   typescript: ^4.3.2
 
 dependencies:
@@ -18,6 +20,8 @@ dependencies:
   dayjs: 1.10.5
   ml-matrix: 6.8.0
   random: 3.0.6
+  seedrandom: 3.0.5
+  timestamp-nano: 1.0.0
 
 devDependencies:
   '@typescript-eslint/eslint-plugin': 4.26.0_20402444dce539b9a5aa61b9d15feae1
@@ -1132,6 +1136,11 @@ packages:
   /text-table/0.2.0:
     resolution: {integrity: sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=}
     dev: true
+
+  /timestamp-nano/1.0.0:
+    resolution: {integrity: sha512-NO/1CZigzlCWQiWdIGv8ebXt6Uk77zdLz2NE7KcZRU5Egj2+947lzUpk30xQUQlq5dRY25j7ZulG4RfA2DHYfA==}
+    engines: {node: '>= 4.5.0'}
+    dev: false
 
   /to-regex-range/5.0.1:
     resolution: {integrity: sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==}

@@ -4,11 +4,11 @@ const { calcTA } = require('./utils/ta');
 const dayjs = require('dayjs');
 const { NeuralNetConfig } = require('./nn/nn');
 const { generatePopulation } = require('./nn/population');
+const { runSim } = require('./simulation/trading');
 
 const main = async () => {
-	let start = dayjs().subtract(16, 'day').toISOString();
-	let { closes, volumes, highs, lows } = await loadTradingData(start);
-	//console.log(closes);
+	let candleStart = dayjs().subtract(16, 'day').toISOString();
+	let { closes, volumes, highs, lows } = await loadTradingData(candleStart);
 
 	let [inputs, inputsTest] = calcTA(closes, highs, lows, volumes, 0.05);
 
@@ -29,6 +29,23 @@ const main = async () => {
 	let config = new NeuralNetConfig(c, 2, 32, 2);
 
 	let population = generatePopulation(config, 0.15, 0.1, populationSize);
+
+	let start = dayjs();
+	for (let i = 0; i < episodes; i++) {
+		/* Scale Back Mutation */
+		if (i % decayInterval == 0) {
+			/* GOLANG FOR LOOP */
+			for (const model of population) {
+				let mutateRate = Math.max(0.02, model.MutationRate - 0.005);
+				let mutateScale = Math.max(0.01, model.MutationRate - 0.005);
+				model.setMutation(mutateRate, mutateScale);
+			}
+		}
+		let fitness = new Array(populationSize);
+		//population.forEach((model, j) => {});
+		fitness[0] = runSim(population[0], inputs, closes);
+		console.log(`is it going to work???? Ahhh: ${fitness[0]}`);
+	}
 };
 
 main();

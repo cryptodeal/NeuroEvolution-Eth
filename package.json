@@ -33,6 +33,8 @@
 		"coinbase-pro-node": "^3.0.4",
 		"dayjs": "^1.10.5",
 		"ml-matrix": "^6.8.0",
-		"random": "^3.0.6"
+		"random": "^3.0.6",
+		"seedrandom": "^3.0.5",
+		"timestamp-nano": "^1.0.0"
 	}
 }

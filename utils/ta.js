@@ -18,14 +18,14 @@ const calcTA = (closes, highs, lows, volumes, testSize) => {
 	for (let i = 0; i < mfi.length; i++) {
 		mfi[i] = 100 - mfi[i];
 	}
-	values.push(mfi);
+	values = [...values, ...mfi];
 	signalCount++;
 	console.log(`mfi: ${mfi.length}`);
 
 	/*MACD histogram
   PORTED & WORKING*/
 	let { outMACDHist } = Macd(closes, 12, 24, 9);
-	values.push(outMACDHist);
+	values = [...values, ...outMACDHist];
 	signalCount++;
 	console.log(`hist: ${outMACDHist.length}`);
 
@@ -35,7 +35,8 @@ const calcTA = (closes, highs, lows, volumes, testSize) => {
 	for (let i = 0; i < ma.length; i++) {
 		ma[i] = closes[i] - ma[i];
 	}
-	values.push(ma);
+	values = [...values, ...ma];
+	signalCount++;
 	console.log(`ma: ${ma.length}`);
 
 	/* BB
@@ -45,8 +46,8 @@ const calcTA = (closes, highs, lows, volumes, testSize) => {
 		outRealUpperBand[i] = closes[i] - outRealUpperBand[i];
 		outRealLowerBand[i] = closes[i] - outRealLowerBand[i];
 	}
-	values.push(outRealUpperBand);
-	values.push(outRealLowerBand);
+	values = [...values, ...outRealUpperBand];
+	values = [...values, ...outRealLowerBand];
 	console.log(`upper: ${outRealUpperBand.length}`);
 	console.log(`lower: ${outRealLowerBand.length}`);
 
@@ -58,17 +59,22 @@ const calcTA = (closes, highs, lows, volumes, testSize) => {
 	for (let i = 0; i < cci.length; i++) {
 		cci[i] = -1 * cci[i];
 	}
-	values.push(cci);
+	values = [...values, ...cci];
 	signalCount++;
 	console.log(`cci: ${cci.length}`);
-
-	var transposed = new Matrix(values);
+	console.log(
+		`signalcount: ${signalCount}\n close length: ${closes.length}\n values length: ${values.length}`
+	);
+	var transposed = Matrix.from1DArray(signalCount, closes.length, values).transpose();
+	console.log(`transposed rows: ${transposed.rows}`);
+	console.log(`transposed columns: ${transposed.columns}`);
 	var denseInputs = transposed.clone();
 
 	//Split test and train
 	var nSamples = denseInputs.rows;
 	var nFeatures = denseInputs.columns;
 	var splitIndex = nSamples / 2;
+
 	var xTrain = new Matrix(splitIndex, nFeatures);
 	var xTest = new Matrix(nSamples - splitIndex, nFeatures);
 
@@ -81,7 +87,10 @@ const calcTA = (closes, highs, lows, volumes, testSize) => {
 	//Scale inputs
 	xTrain = stdScaler(xTrain);
 	xTest = stdScaler(xTest);
-
+	console.log(`xTrain rows: ${xTrain.rows}`);
+	console.log(`xTrain columns: ${xTrain.columns}`);
+	console.log(`xTest rows: ${xTest.rows}`);
+	console.log(`xTest columns: ${xTest.columns}`);
 	return [xTrain, xTest];
 };
 

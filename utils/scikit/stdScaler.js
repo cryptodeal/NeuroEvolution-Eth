@@ -1,7 +1,7 @@
 const stdScaler = (matrix) => {
-	matrix.apply((row, col) => {
-		matrix.set(row, col, (matrix.get(row, col) - matrix.mean) / matrix.standardDeviation);
+	return matrix.apply((i, j) => {
+		let res = (matrix.get(i, j) - matrix.mean) / matrix.standardDeviation;
+		return res;
 	});
-	return matrix;
 };
 module.exports = { stdScaler };
