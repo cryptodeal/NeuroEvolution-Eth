@@ -1,19 +1,23 @@
 const { ema } = require('./ema');
+
+/* This function might be broken?? */
 const Macd = (inReal, inFastPeriod, inSlowPeriod, inSignalPeriod) => {
 	if (inSlowPeriod < inFastPeriod) {
-		[inSlowPeriod, inFastPeriod] = [inFastPeriod, inSlowPeriod];
+		let tempSlow = inSlowPeriod;
+		inSlowPeriod = inFastPeriod;
+		inFastPeriod = tempSlow;
 	}
 
-	let k1 = 0.0;
-	let k2 = 0.0;
+	var k1 = 0.0;
+	var k2 = 0.0;
 	if (inSlowPeriod != 0) {
-		k1 = 2.0 / parseFloat(inSlowPeriod + 1);
+		k1 = 2.0 / inSlowPeriod + 1;
 	} else {
 		inSlowPeriod = 26;
 		k1 = 0.075;
 	}
 	if (inFastPeriod != 0) {
-		k2 = 2.0 / parseFloat(inFastPeriod + 1);
+		k2 = 2.0 / inFastPeriod + 1;
 	} else {
 		inFastPeriod = 12;
 		k2 = 0.15;
@@ -23,22 +27,42 @@ const Macd = (inReal, inFastPeriod, inSlowPeriod, inSignalPeriod) => {
 	let lookbackTotal = lookbackSignal;
 	lookbackTotal += inSlowPeriod - 1;
 
+	const fastEMABuffer = calcBuffers(inReal, inFastPeriod, inSlowPeriod, k1, k2);
+
+	const outMACD = calcOutMACD(lookbackTotal, fastEMABuffer, inReal);
+
+	const outMACDSignal = ema(outMACD, inSignalPeriod, 2.0 / inSignalPeriod + 1);
+
+	const outMACDHist = calcMACDHist(lookbackTotal, outMACD, outMACDSignal, inReal);
+
+	return [outMACD, outMACDSignal, outMACDHist];
+};
+
+const calcBuffers = (inReal, inFastPeriod, inSlowPeriod, k1, k2) => {
 	let fastEMABuffer = ema(inReal, inFastPeriod, k2);
+	//console.log(fastEMABuffer);
 	let slowEMABuffer = ema(inReal, inSlowPeriod, k1);
+	//console.log(slowEMABuffer);
 	for (let i = 0; i < fastEMABuffer.length; i++) {
 		fastEMABuffer[i] = fastEMABuffer[i] - slowEMABuffer[i];
 	}
+	return fastEMABuffer;
+};
 
-	let outMACD = new Array(inReal.length);
+const calcOutMACD = (lookbackTotal, fastEMABuffer, inReal) => {
+	let outMACD = new Array(inReal.length).fill(0.0);
 	for (let i = lookbackTotal - 1; i < fastEMABuffer.length; i++) {
 		outMACD[i] = fastEMABuffer[i];
 	}
-	let outMACDSignal = ema(outMACD, inSignalPeriod, 2.0 / parseFloat(inSignalPeriod + 1));
+	return outMACD;
+};
 
-	let outMACDHist = new Array(inReal.length);
-	for (let i = lookbackTotal; i < outMACDHist.length; i++) {
+const calcMACDHist = (lookbackTotal, outMACD, outMACDSignal, inReal) => {
+	const outMACDHist = new Array(inReal.length).fill(0.0);
+	for (let i = lookbackTotal; i < inReal.length; i++) {
 		outMACDHist[i] = outMACD[i] - outMACDSignal[i];
 	}
-	return { outMACD, outMACDSignal, outMACDHist };
+	return outMACDHist;
 };
+
 module.exports = { Macd };

@@ -1,5 +1,5 @@
 const Sma = (inReal, inTimePeriod) => {
-	var outReal = new Array(inReal.length);
+	var outReal = new Array(inReal.length).fill(0.0);
 	var lookbackTotal = inTimePeriod - 1;
 	var startIdx = lookbackTotal;
 	var periodTotal = 0.0;
@@ -16,7 +16,7 @@ const Sma = (inReal, inTimePeriod) => {
 		periodTotal += inReal[i];
 		let tempReal = periodTotal;
 		periodTotal -= inReal[trailingIdx];
-		outReal[outIdx] = tempReal / parseFloat(inTimePeriod);
+		outReal[outIdx] = tempReal / inTimePeriod;
 		trailingIdx++;
 		i++;
 		outIdx++;

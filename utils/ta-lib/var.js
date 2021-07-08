@@ -1,5 +1,5 @@
 const Var = (inReal, inTimePeriod) => {
-	var outReal = new Array(inReal.length);
+	var outReal = new Array(inReal.length).fill(0.0);
 	var nbInitialElementNeeded = inTimePeriod - 1;
 	var startIdx = nbInitialElementNeeded;
 	var periodTotal1 = 0.0;
@@ -21,8 +21,8 @@ const Var = (inReal, inTimePeriod) => {
 		periodTotal1 += tempReal;
 		tempReal *= tempReal;
 		periodTotal2 += tempReal;
-		let meanValue1 = periodTotal1 / parseFloat(inTimePeriod);
-		let meanValue2 = periodTotal2 / parseFloat(inTimePeriod);
+		let meanValue1 = periodTotal1 / inTimePeriod;
+		let meanValue2 = periodTotal2 / inTimePeriod;
 		tempReal = inReal[trailingIdx];
 		periodTotal1 -= tempReal;
 		tempReal *= tempReal;

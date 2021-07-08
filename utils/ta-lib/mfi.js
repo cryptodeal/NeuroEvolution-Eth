@@ -1,9 +1,9 @@
 const Mfi = (inHigh, inLow, inClose, inVolume, inTimePeriod) => {
 	let moneyFlow = { positive: undefined, negative: undefined };
-	let outReal = new Array(inHigh.length);
+	let outReal = new Array(inHigh.length).fill(0.0);
 	let mflowIdx = 0;
 	let maxIdxMflow = 50 - 1;
-	let mflow = Array.from({ length: inTimePeriod }, () => moneyFlow);
+	let mflow = new Array(inTimePeriod).fill(moneyFlow);
 	maxIdxMflow = inTimePeriod - 1;
 	let lookbackTotal = inTimePeriod;
 	let startIdx = lookbackTotal;

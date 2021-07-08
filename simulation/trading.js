@@ -2,10 +2,11 @@
 const { Wallet } = require('./wallet');
 const { Worker, isMainThread, parentPort, workerData } = require('worker_threads');
 
-const runSim = (model, inputs, closes) => {
+const runSim = async (model, inputs, closes) => {
 	let wallet = new Wallet(10000.0, 0.0035);
-
-	let modelOutputs = model.predict(inputs);
+	//console.log(inputs);
+	const modelOutputs = await model.predict(inputs);
+	//console.log(modelOutputs);
 
 	for (let i = 0; i < closes.length; i++) {
 		/* Buy Or Sell Signal */

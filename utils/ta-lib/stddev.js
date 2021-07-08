@@ -1,4 +1,5 @@
 const { Var } = require('./var');
+
 const StdDev = (inReal, inTimePeriod, inNbDev) => {
 	var outReal = Var(inReal, inTimePeriod);
 	if (inNbDev != 1.0) {
@@ -16,4 +17,5 @@ const StdDev = (inReal, inTimePeriod, inNbDev) => {
 	}
 	return outReal;
 };
+
 module.exports = { StdDev };

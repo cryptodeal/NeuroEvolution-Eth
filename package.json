@@ -31,9 +31,11 @@
 	},
 	"dependencies": {
 		"coinbase-pro-node": "^3.0.4",
+		"danfojs-node": "^0.2.7",
 		"dayjs": "^1.10.5",
 		"ml-matrix": "^6.8.0",
 		"random": "^3.0.6",
+		"random-float-pro": "^1.0.1",
 		"seedrandom": "^3.0.5",
 		"timestamp-nano": "^1.0.0"
 	}

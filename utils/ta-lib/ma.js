@@ -1,7 +1,7 @@
 const { Sma } = require('./sma');
 const { Ema } = require('./ema');
 const Ma = (inReal, inTimePeriod, inMAType) => {
-	var outReal = new Array(inReal.length);
+	var outReal = new Array(inReal.length).fill(0.0);
 	if (inTimePeriod == 1) {
 		outReal = [...inReal];
 		return outReal;

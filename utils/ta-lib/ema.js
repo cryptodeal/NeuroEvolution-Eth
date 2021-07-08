@@ -1,25 +1,25 @@
-const ema = (inReal, inTimePeriod, k1) => {
-	var outReal = new Array(inReal.length);
+function ema(inReal, inTimePeriod, k1) {
+	var outReal = new Array(inReal.length).fill(0.0);
 
-	let lookbackTotal = inTimePeriod - 1;
-	let startIdx = lookbackTotal;
-	let today = startIdx - lookbackTotal;
-	let i = inTimePeriod;
-	let tempReal = 0.0;
+	var lookbackTotal = inTimePeriod - 1;
+	var startIdx = lookbackTotal;
+	var today = startIdx - lookbackTotal;
+	var i = inTimePeriod;
+	var tempReal = 0.0;
 	while (i > 0) {
 		tempReal += inReal[today];
 		today++;
 		i--;
 	}
 
-	let prevMA = tempReal / parseFloat(inTimePeriod);
+	var prevMA = tempReal / inTimePeriod;
 
 	while (today <= startIdx) {
 		prevMA = (inReal[today] - prevMA) * k1 + prevMA;
 		today++;
 	}
 	outReal[startIdx] = prevMA;
-	let outIdx = startIdx + 1;
+	var outIdx = startIdx + 1;
 	while (today < inReal.length) {
 		prevMA = (inReal[today] - prevMA) * k1 + prevMA;
 		outReal[outIdx] = prevMA;
@@ -27,5 +27,5 @@ const ema = (inReal, inTimePeriod, k1) => {
 		outIdx++;
 	}
 	return outReal;
-};
+}
 module.exports = { ema };
